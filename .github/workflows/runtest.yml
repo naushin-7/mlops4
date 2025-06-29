@@ -6,8 +6,8 @@ on:
     branches: [main]
 
 permissions:
-  pull-requests: write    # Needed for CML to comment on the PR
-  contents: read          # Needed for actions/checkout
+  contents: read
+  pull-requests: write  # Allow commenting on PRs
 
 jobs:
   test:
@@ -29,35 +29,46 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install black flake8
-      - name: Auto-format with Black
+
+      - name: Run Black formatter
         run: |
           source .venv/bin/activate
           echo "# 🧪 MLOps Sanity Test Report" > result.txt
           echo "## Code Formatting (Black)" >> result.txt
           black --check --diff train.py test/ >> result.txt 2>&1 || echo "Formatting issues found" >> result.txt
           echo "" >> result.txt
-      - name: Lint with Flake8
+
+      - name: Run Flake8 linter
         run: |
           source .venv/bin/activate
           echo "## Linting Results (Flake8)" >> result.txt
           flake8 train.py test/ --max-line-length=88 --extend-ignore=E203,W503 >> result.txt 2>&1 || echo "Linting issues found" >> result.txt
           echo "" >> result.txt
-      - name: Run training and testing
+
+      - name: Run training
         run: |
           source .venv/bin/activate
           python train.py > training.log
+          echo "## Training Log" >> result.txt
+          cat training.log >> result.txt
+          echo "" >> result.txt
+
+      - name: Run unit tests
+        run: |
+          source .venv/bin/activate
           echo "## Unit Test Results" >> result.txt
           python -m unittest discover test >> result.txt 2>&1 || echo "Test failures found" >> result.txt
           echo "" >> result.txt
-          cat training.log >> result.txt
           echo "Tests completed on $(date)" >> result.txt
-      - name: Upload artifacts
+
+      - name: Upload result and model artifacts
         uses: actions/upload-artifact@v4
         with:
           name: model-artifacts
           path: |
             model/model.pkl
             result.txt
+
       - name: Setup CML
         uses: iterative/setup-cml@v2
 
@@ -66,4 +77,4 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source .venv/bin/activate
-          cml comment create --publish result.txt
+          cml comment create --repo $GITHUB_REPOSITORY --token $REPO_TOKEN --publish result.txt
