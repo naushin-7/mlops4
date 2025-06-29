@@ -77,4 +77,4 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source .venv/bin/activate
-          cml comment create --repo $GITHUB_REPOSITORY --token $REPO_TOKEN --publish result.txt
+          cml comment create --repo https://github.com/$GITHUB_REPOSITORY --token $REPO_TOKEN --publish result.txt
