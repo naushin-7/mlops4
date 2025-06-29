@@ -32,7 +32,7 @@ jobs:
       - name: Auto-format with Black
         run: |
           source .venv/bin/activate
-          echo "# MLOps Sanity Test Report" > result.txt
+          echo "# 🧪 MLOps Sanity Test Report" > result.txt
           echo "## Code Formatting (Black)" >> result.txt
           black --check --diff train.py test/ >> result.txt 2>&1 || echo "Formatting issues found" >> result.txt
           echo "" >> result.txt
@@ -42,15 +42,12 @@ jobs:
           echo "## Linting Results (Flake8)" >> result.txt
           flake8 train.py test/ --max-line-length=88 --extend-ignore=E203,W503 >> result.txt 2>&1 || echo "Linting issues found" >> result.txt
           echo "" >> result.txt
-      - name: Run training
+      - name: Run training and testing
         run: |
           source .venv/bin/activate
-          python train.py > training.log
           echo "## Training Results" >> result.txt
+          python train.py > training.log
           cat training.log >> result.txt
-      - name: Run testing
-        run: |
-          source .venv/bin/activate          
           echo "## Unit Test Results" >> result.txt
           python -m unittest discover test >> result.txt 2>&1 || echo "Test failures found" >> result.txt
           echo "" >> result.txt
@@ -67,7 +64,7 @@ jobs:
 
       - name: Comment test results with CML
         env:
-          REPO_TOKEN: ${{ secrets.CML_TOKEN }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source .venv/bin/activate
-          cml comment update --publish result.txt
+          cml comment create --publish result.txt
