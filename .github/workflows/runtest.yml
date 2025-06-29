@@ -74,7 +74,7 @@ jobs:
 
       - name: Comment test results with CML
         env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_TOKEN: ${{ secrets.CML_TOKEN }}
         run: |
           source .venv/bin/activate
-          cml comment create --repo https://github.com/$GITHUB_REPOSITORY --token $REPO_TOKEN --publish result.txt
+          cml comment update --publish result.txt
