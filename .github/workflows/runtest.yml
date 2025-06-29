@@ -28,7 +28,7 @@ jobs:
           source .venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install black flake8 pytest cml
+          pip install black flake8
       - name: Auto-format with Black
         run: |
           source .venv/bin/activate
@@ -66,4 +66,4 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source .venv/bin/activate
-          cml comment create --file result.txt
+          cml comment create --publish result.txt
