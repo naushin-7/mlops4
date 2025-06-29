@@ -66,4 +66,4 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source .venv/bin/activate
-          cml comment create result.txt
+          cml comment create --publish result.txt
