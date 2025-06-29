@@ -45,12 +45,11 @@ jobs:
       - name: Run training and testing
         run: |
           source .venv/bin/activate
-          echo "## Training Results" >> result.txt
           python train.py > training.log
-          cat training.log >> result.txt
           echo "## Unit Test Results" >> result.txt
           python -m unittest discover test >> result.txt 2>&1 || echo "Test failures found" >> result.txt
           echo "" >> result.txt
+          cat training.log >> result.txt
           echo "Tests completed on $(date)" >> result.txt
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
