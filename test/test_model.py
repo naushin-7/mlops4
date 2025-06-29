@@ -6,6 +6,11 @@ import os,sys
 
 class TestModelEvaluation(unittest.TestCase):
     def setUp(self):
+        pathname = os.path.dirname(os.path.dirname(sys.argv[0]))
+        path = os.path.abspath(pathname)
+        data_dir = os.path.join('test_data','iris.csv')
+        csv_path = os.path.join(path,data_dir)
+        model_path = os.path.join(path,'model','model.pkl')
         # Load data and model before each test
         self.df = pd.read_csv(csv_path)
         self.X = self.df.drop(columns=["species"])
@@ -19,9 +24,4 @@ class TestModelEvaluation(unittest.TestCase):
         self.assertGreater(acc, 0.9, f"Model accuracy < 0.9: {acc}")
 
 if __name__ == '__main__':
-    pathname = os.path.dirname(os.path.dirname(sys.argv[0]))
-    path = os.path.abspath(pathname)
-    data_dir = os.path.join('test_data','iris.csv')
-    csv_path = os.path.join(path,data_dir)
-    model_path = os.path.join(path,'model','model.pkl')
     unittest.main()
